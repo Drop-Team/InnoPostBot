@@ -4,7 +4,7 @@ from typing import Text
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ContentTypes
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ContentTypes, user
 from telethon.events import register
 
 from config import BOT_TOKEN
@@ -93,6 +93,12 @@ async def process_change_mode_command(message: types.Message):
                                     "если захотите вернуться напиши /mode снова")
     users[user_id]["state"] = UserStates.active
     await message.answer("Отлично! Я снова слежу за сообщениями")
+
+
+async def send_message_about_mention(user_id, message_text):
+    await bot.send_message(user_id, "Кажется тебе что-то пришло. Вот копия сообщения")
+    await bot.send_message(user_id, message_text)
+    return
 
 
 def bot_start():
