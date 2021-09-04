@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
-users = dict() #[id] <first_name><last_name>
+users = dict() #[id] <last_name_en><last_name>
 users_locked = False
 
 @dp.errors_handler()
@@ -153,7 +153,7 @@ async def process_name_command(message: types.Message):
                                     "недоступна")
     users[user_id]["state"] = UserStates.init
     users[user_id]["last_name"] = "unregistered"
-    users[user_id]["first_name"] = "unregistered"
+    users[user_id]["last_name_en"] = "unregistered"
     await message.answer("Отлично, теперь напиши свою фамилию")
 
 
@@ -178,9 +178,15 @@ async def process_change_mode_command(message: types.Message):
 async def send_message_about_mention(user_id, message_text, message_link):
     logger.info(f"Sending notification to {user_id}")
     try:
-        await bot.send_message(user_id, f"Кажется тебе что-то пришло. Вот копия [сообщения]({message_link})")
+        await bot.send_message(user_id, f"Кажется тебе что-то пришло. Вот копия сообщения "
+                                        f"{message_link}")
         await bot.send_message(user_id, message_text)
-        await bot.send_message(user_id, "Режим работы почты: Бла бла бла")
+        await bot.send_message(user_id, "Почтовое отделение 420500:\n"
+                                        "ПН - ПТ: 9.00 - 17.00\n"
+                                        "СБ - ВС: Выходной\n"
+                                        "Университетская ул., 7, Иннополис, Россия\n"
+                                        "Для того, чтобы забрать почтовое отправление нужно "
+                                        "иметь с собой паспорт или электронную подпись")
         Metrics.sending_message.labels("success").inc()
     except aiogram.utils.exceptions.BotBlocked:
         logger.info(f"Bot blocked by user {user_id}")
