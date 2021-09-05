@@ -19,7 +19,9 @@ async def process_fetched_message(message_text, message_link):
                 (user.last_name_ru.lower() in lower_msg_text or user.last_name_en.lower() in lower_msg_text)):
             continue
         try:
-            await bot.send_message(user_id, f"Кажется, тебе что-то пришло. Вот копия сообщения {message_link}:")
+            html_link = f"<a href='{message_link}'>сообщения</a>"
+            await bot.send_message(user_id, f"Кажется, тебе что-то пришло. Вот копия {html_link}:",
+                                   parse_mode="HTML")
             await bot.send_message(user_id, message_text)
             await bot.send_message(user_id, "Почтовое отделение 420500:\n"
                                             "ПН - ПТ: 9.00 - 17.00\n"
@@ -52,10 +54,12 @@ async def process_help_command(message: types.Message):
     user = users[message.from_user.id]
     if user.state == UserStates.confirmed:
         user_mode = "Включены" if user.subscribed else "Отключены"
-        await message.answer(f"Я тебя помню как *{user.last_name_ru}* (*{user.last_name_en}*) | /name сменить фамилию\n"
-                             f"Уведомления: *{user_mode}* | /mode переключить режим",
+        await message.answer(f"Я тебя помню как *{user.last_name_ru}* (*{user.last_name_en}*)\n"
+                             f"/name - сменить фамилию\n\n"
+                             f"Уведомления: *{user_mode}*\n"
+                             f"/mode -  переключить режим",
                              parse_mode="Markdown")
-    await message.answer("Поддержка: @blinikar and @KeepError\n"
+    await message.answer("Поддержка: @blinikar и @KeepError\n"
                          "GitHub: https://github.com/blinikar/innopostbot",
                          parse_mode="Markdown", disable_web_page_preview=True, )
     Metrics.help_command.labels("success").inc()
