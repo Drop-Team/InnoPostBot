@@ -2,11 +2,23 @@ from prometheus_client import Counter, Gauge
 
 
 def save_users_count(data):
-    Metrics.users_total.set(len(data))
+    from app.users import UserStates
+
+    users_total = 0
+    users_confirmed = 0
+    for user_id in data:
+        users_total += 1
+        if data[user_id].state == UserStates.confirmed:
+            users_confirmed += 1
+
+    Metrics.users_count.labels("total").set(users_total)
+    Metrics.users_count.labels("confirmed").set(users_confirmed)
 
 
 class Metrics:
-    users_total = Gauge("users_total", "users who confirmed email")
+    users_count = Gauge("users_count", "users who confirmed email", ["type"])
+    users_count.labels("total")
+    users_count.labels("confirmed")
 
     errors = Counter("errors", "Errors count")
 
