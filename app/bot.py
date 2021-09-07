@@ -38,6 +38,7 @@ async def process_fetched_message(message_text, message_link):
 @dp.message_handler(commands=["start"])
 async def process_start_command(message: types.Message):
     logger.info(f"User {message.from_user.username} ({message.from_user.id}) started bot")
+    Metrics.start_command.labels("success").inc()
     user = users[message.from_user.id]
     if user.state == UserStates.confirmed:
         return await message.answer(f"Я тебя помню как {user.last_name_ru} ({user.last_name_en})\n"
@@ -45,12 +46,12 @@ async def process_start_command(message: types.Message):
                                     "Чтобы сменить режим уведомлений, напиши /mode")
     await message.answer("Привет, это @innopostbot\n"
                          "Отправь мне свою фамилию, чтобы я отслеживал её в канале Почты России")
-    Metrics.start_command.labels("success").inc()
 
 
 @dp.message_handler(commands=["help"])
 async def process_help_command(message: types.Message):
     logger.info(f"User {message.from_user.username} ({message.from_user.id}) used help command")
+    Metrics.help_command.labels("success").inc()
     user = users[message.from_user.id]
     if user.state == UserStates.confirmed:
         user_mode = "Включены" if user.subscribed else "Отключены"
@@ -62,7 +63,6 @@ async def process_help_command(message: types.Message):
     await message.answer("Поддержка: @blinikar и @KeepError\n"
                          "GitHub: https://github.com/blinikar/innopostbot",
                          parse_mode="Markdown", disable_web_page_preview=True, )
-    Metrics.help_command.labels("success").inc()
 
 
 @dp.message_handler(lambda message: users[message.from_user.id].state == UserStates.init)
