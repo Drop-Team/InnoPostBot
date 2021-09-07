@@ -111,10 +111,8 @@ async def process_change_mode_command(message: types.Message):
     user = users[user_id]
     if user.subscribed:
         await message.answer("Больше не буду тебя беспокоить. Для отмены напиши /mode снова.")
-        Metrics.changing_mode.labels("subscribed_off").inc()
     else:
         await message.answer("Отлично, уведомления снова включены!")
-        Metrics.changing_mode.labels("subscribed_on").inc()
     user.subscribed = not user.subscribed
     save_file()
 

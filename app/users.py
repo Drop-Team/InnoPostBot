@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 
-from app.metrics import save_users_count
+from app.metrics import save_users_metrics
 
 
 class UserStates:
@@ -45,7 +45,7 @@ def read_file():
         user.from_dict(data[user_id])
         result[int(user_id)] = user
 
-    save_users_count(result)
+    save_users_metrics(result)
 
     return result
 
@@ -54,7 +54,8 @@ def save_file():
     data = {str(user_id): user.to_dict() for user_id, user in users.items()}
     with open("users.json", "w") as f:
         json.dump(data, f)
-    save_users_count(users)
+
+    save_users_metrics(users)
 
 
 users = read_file()
