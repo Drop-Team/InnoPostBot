@@ -32,7 +32,7 @@ class Metrics:
     users_count.labels("total")
     users_count.labels("confirmed")
 
-    users_mode_count = Gauge("users_mode", "Changing notification mode", ["type"])
+    users_mode_count = Gauge("users_mode_count", "Changing notification mode", ["type"])
     users_mode_count.labels("subscribed_off")
     users_mode_count.labels("subscribed_on")
 
