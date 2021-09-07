@@ -45,6 +45,8 @@ def read_file():
         user.from_dict(data[user_id])
         result[int(user_id)] = user
 
+    save_users_count(result)
+
     return result
 
 
