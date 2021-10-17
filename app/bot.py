@@ -29,6 +29,7 @@ async def process_fetched_message(message_text, message_link):
                                             "Университетская ул., 7, Иннополис, Россия\n"
                                             "Для того, чтобы забрать почтовое отправление нужно "
                                             "иметь с собой паспорт или электронную подпись.")
+            logger.info(f"Sended notification to user {user_id}")
             Metrics.sending_notification.labels("success").inc()
         except exceptions.BotBlocked:
             logger.info(f"Bot blocked by user {user_id}")
