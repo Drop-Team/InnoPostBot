@@ -31,9 +31,9 @@ async def process_fetched_message(message_text, message_link):
                                             "иметь с собой паспорт или электронную подпись.")
             logger.info(f"Sended notification to user {user_id}")
             Metrics.sending_notification.labels("success").inc()
-        except exceptions.BotBlocked:
-            logger.info(f"Bot blocked by user {user_id}")
-            Metrics.sending_notification.labels("blocked").inc()
+        except Exception as e:
+            logger.info(f"Error ({e}) occured while sending message to {user_id}")
+            Metrics.sending_notification.labels("error").inc()
 
 
 @dp.message_handler(commands=["start"])

@@ -42,7 +42,7 @@ class Metrics:
 
     sending_notification = Counter("sending_notification", "Sending notification to user", ["type"])
     sending_notification.labels("success")
-    sending_notification.labels("blocked")
+    sending_notification.labels("error")
 
     registration = Counter("registration", "Registration", ["type"])
     registration.labels("success")
