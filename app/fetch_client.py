@@ -22,6 +22,11 @@ async def handler(event):
     await bot.process_fetched_message(message_text, message_link)
 
 
+async def get_last_message():
+    messages = await client.get_messages(config.CHAT_ID)
+    return messages[0] if messages else None
+
+
 def start():
     print("Fetch client starting...")
     client.start()

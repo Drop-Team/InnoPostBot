@@ -1,3 +1,5 @@
+from dateutil import tz
+
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor, exceptions
@@ -5,6 +7,7 @@ from aiogram.utils import executor, exceptions
 from app.logger import logger
 from app.users import users, UserStates, save_file
 from app.metrics import Metrics
+from app.fetch_client import get_last_message
 
 import config
 
@@ -116,6 +119,23 @@ async def process_change_mode_command(message: types.Message):
         await message.answer("Отлично, уведомления снова включены!")
     user.subscribed = not user.subscribed
     save_file()
+
+
+@dp.message_handler(commands=["last_msg"])
+async def last_msg_command(message: types.Message):
+    user_id = message.from_user.id
+    logger.info(f"User {user_id} used last_msg command")
+    last_msg = await get_last_message()
+    if not last_msg:
+        return await message.answer("Не найден")
+
+    from_zone = tz.tzutc()
+    to_zone = tz.gettz("Europe/Moscow")
+    date = last_msg.date.replace(tzinfo=from_zone).astimezone(to_zone)
+
+    msg_date = date.strftime("-- %d.%m.%Y %H:%M --")
+    answer_text = f"{msg_date}\n\n{last_msg.message}"
+    await message.answer(answer_text)
 
 
 def start():
